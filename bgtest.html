@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bible Quiz Game</title>
+  <style>
+    body {
+      background: #f5f5dc;
+      font-family: 'Georgia', serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #4a2e00;
+    }
+
+    #quiz-container {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 10px #ccc;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .question {
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .option {
+      display: block;
+      margin: 8px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .option:hover {
+      background: #eee;
+    }
+
+    #next-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #4a2e00;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #score {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #4a2e00;
+    }
+
+    #timer {
+      font-size: 18px;
+      color: #ff0000;
+    }
+
+    #chapter-list {
+      position: fixed;
+      top: 20%;
+      right: 10px;
+      background-color: #4a2e00;
+      padding: 20px;
+      border-radius: 8px;
+      color: #fff;
+      display: block;
+    }
+
+    .chapter-item {
+      margin: 10px 0;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .chapter-item:hover {
+      background: #333;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>📜 Bible Quiz Game - Lion of Judah 🦁</h1>
+
+  <div id="timer"></div>
+
+  <div id="quiz-container">
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+    <button id="next-btn" class="hidden">Next</button>
+    <div id="score" class="hidden"></div>
+  </div>
+
+  <div id="chapter-list">
+    <h3>Chapters</h3>
+    <div class="chapter-item" onclick="loadChapter('genesis')">Genesis</div>
+    <div class="chapter-item" onclick="loadChapter('exodus')">Exodus</div>
+    <!-- Add more chapters as needed -->
+  </div>
+
+  <script>
+    const chapters = {
+      genesis: [
+        // 20 questions for Genesis
+        {
+          question: "Who created the world?",
+          options: ["Moses", "God", "David", "Elijah"],
+          answer: "God"
+        },
+        {
+          question: "What did God create on the first day?",
+          options: ["Water", "Light", "Animals", "Humans"],
+          answer: "Light"
+        },
+        {
+          question: "Who was the first man created by God?",
+          options: ["Noah", "Moses", "Adam", "Abraham"],
+          answer: "Adam"
+        },
+        {
+          question: "Who was the first woman created?",
+          options: ["Eve", "Sarah", "Rachel", "Deborah"],
+          answer: "Eve"
+        },
+        {
+          question: "Where did Adam and Eve live before they sinned?",
+          options: ["Egypt", "The Garden of Eden", "Canaan", "The Wilderness"],
+          answer: "The Garden of Eden"
+        },
+        {
+          question: "What fruit did Eve eat that led to the fall of mankind?",
+          options: ["Apple", "Fig", "Grape", "Pomegranate"],
+          answer: "Apple"
+        },
+    {
+      question: "Who was the first son of Adam and Eve?",
+      options: ["Abel", "Seth", "Cain", "Noah"],
+      answer: "Cain"
+    },
+    {
+      question: "What offering did Abel bring to God?",
+      options: ["A lamb", "Fruits of the ground", "A bull", "Bread and wine"],
+      answer: "A lamb"
+    },
+    {
+      question: "Why did Cain kill Abel?",
+      options: ["Jealousy", "Anger", "Greed", "Pride"],
+      answer: "Jealousy"
+    },
+    
+    {
+      question: "What was the name of Adam and Eve's third son?",
+      options: ["Abel", "Seth", "Cain", "Noah"],
+      answer: "Seth"
+    },
+    {
+      question: "Who built the Ark?",
+      options: ["Abraham", "Noah", "Moses", "David"],
+      answer: "Noah"
+    },
+    {
+      question: "What was the sign of the covenant God made with Noah?",
+      options: ["Rainbow", "Star", "Dove", "Fire"],
+      answer: "Rainbow"
+    },
+    {
+      question: "How many days and nights did it rain during the flood?",
+      options: ["7", "10", "40", "100"],
+      answer: "40"
+    },
+    {
+      question: "Who was Noah’s wife?",
+      options: ["Sarah", "Rebekah", "Rachel", "The Bible does not specify"],
+      answer: "The Bible does not specify"
+    },
+    {
+      question: "What did God promise Abraham?",
+      options: ["A land flowing with milk and honey", "Eternal life", "A son", "A kingdom"],
+      answer: "A land flowing with milk and honey"
+    },
+    {
+      question: "Who was Abraham’s first son?",
+      options: ["Isaac", "Jacob", "Ishmael", "Lot"],
+      answer: "Ishmael"
+    },
+    {
+      question: "Who was Sarah’s maidservant and mother of Abraham's son, Ishmael?",
+      options: ["Rebekah", "Hagar", "Rachel", "Deborah"],
+      answer: "Hagar"
+    },
+    {
+      question: "How old was Abraham when Isaac was born?",
+      options: ["100", "75", "120", "85"],
+      answer: "100"
+    },
+    {
+      question: "What name did God give to Abraham's promised son?",
+      options: ["Isaac", "Ishmael", "Jacob", "Joseph"],
+      answer: "Isaac"
+    },
+    {
+      question: "Who was Isaac’s wife?",
+      options: ["Rachel", "Leah", "Rebekah", "Deborah"],
+      answer: "Rebekah"
+    },
+    {
+      question: "What were the names of Isaac and Rebekah’s twin sons?",
+      options: ["Joseph and Benjamin", "Cain and Abel", "Jacob and Esau", "Isaac and Ishmael"],
+      answer: "Jacob and Esau"
+    },
+    {
+      question: "Which son of Isaac sold his birthright?",
+      options: ["Jacob", "Esau", "Joseph", "Benjamin"],
+      answer: "Esau"
+    },
+    {
+      question: "Who did Jacob marry first?",
+      options: ["Rachel", "Leah", "Sarah", "Rebekah"],
+      answer: "Leah"
+    },
+    {
+      question: "How many sons did Jacob have?",
+      options: ["10", "12", "15", "7"],
+      answer: "12"
+    },
+    {
+      question: "Who was Jacob’s favorite son?",
+      options: ["Benjamin", "Joseph", "Judah", "Reuben"],
+      answer: "Joseph"
+    },
+    {
+      question: "What did Joseph’s brothers do to him?",
+      options: ["Killed him", "Sold him into slavery", "Banished him", "Left him in the wilderness"],
+      answer: "Sold him into slavery"
+    },
+    {
+      question: "What did Joseph interpret for Pharaoh's dream?",
+      options: ["Seven years of plenty followed by seven years of famine", "Seven kings ruling the land", "The rise of a great empire", "The fall of Egypt"],
+      answer: "Seven years of plenty followed by seven years of famine"
+    },
+    {
+      question: "Who was Joseph’s mother?",
+      options: ["Leah", "Sarah", "Rachel", "Rebekah"],
+      answer: "Rachel"
+    },
+    {
+      question: "What did Pharaoh give to Joseph after he interpreted his dream?",
+      options: ["His daughter’s hand in marriage", "A signet ring and a fine robe", "A new palace", "His crown"],
+      answer: "A signet ring and a fine robe"
+    },
+    {
+      question: "Who was Joseph's youngest brother?",
+      options: ["Benjamin", "Judah", "Levi", "Dan"],
+      answer: "Benjamin"
+    }
+  ]
+};
+      exodus: [
+        {
+          question: "Who led the Israelites out of Egypt?",
+          options: ["Abraham", "Moses", "David", "Noah"],
+          answer: "Moses"
+        },
+        {
+          question: "What did God use to speak to Moses at the burning bush?",
+          options: ["Angel", "Voice", "Fire", "Cloud"],
+          answer: "Fire"
+        },
+        {
+          question: "What was the name of Moses' brother?",
+          options: ["Aaron", "Joseph", "Abraham", "Isaac"],
+          answer: "Aaron"
+        },
+        {
+          question: "How many plagues did God send upon Egypt?",
+          options: ["7", "10", "12", "15"],
+          answer: "10"
+        },
+        {
+          question: "What did Moses part to escape from the Egyptians?",
+          options: ["Sea of Galilee", "Dead Sea", "River Nile", "Red Sea"],
+          answer: "Red Sea"
+        },
+        // Add remaining 15 questions in the same format
+      ]
+      // Add more chapters as needed
+    ;
+
+    let currentChapter = "";
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer;
+    let timeRemaining = 240; 
+    
+    function loadChapter(chapter) {
+      currentChapter = chapter;
+      currentQuestionIndex = 0;
+      score = 0;
+      document.getElementById("score").classList.add("hidden");
+      document.getElementById("next-btn").classList.remove("hidden");
+      loadQuestion();
+      startTimer();
+    }
+
+    function loadQuestion() {
+      const chapterData = chapters[currentChapter];
+      if (currentQuestionIndex < chapterData.length) {
+        const questionData = chapterData[currentQuestionIndex];
+        document.getElementById("question").innerText = `Q${currentQuestionIndex + 1}: ${questionData.question}`;
+        const optionsContainer = document.getElementById("options");
+        optionsContainer.innerHTML = "";
+        questionData.options.forEach(option => {
+          const button = document.createElement("button");
+          button.classList.add("option");
+          button.innerText = option;
+          button.onclick = () => checkAnswer(option);
+          optionsContainer.appendChild(button);
+        });
+      } else {
+        showScore();
+      }
+    }
+
+    function checkAnswer(selectedOption) {
+      const chapterData = chapters[currentChapter];
+      const correctAnswer = chapterData[currentQuestionIndex].answer;
+      if (selectedOption === correctAnswer) {
+        score++;
+      }
+      currentQuestionIndex++;
+      if (currentQuestionIndex < chapterData.length) {
+        loadQuestion();
+      } else {
+        showScore();
+      }
+    }
+
+    function startTimer() {
+      timeRemaining = 240; // Reset timer to 240 seconds (4 minutes)
+      document.getElementById("timer").innerText = `Time: ${timeRemaining}s`;
+      timer = setInterval(() => {
+        timeRemaining--;
+        document.getElementById("timer").innerText = `Time: ${timeRemaining}s`;
+        if (timeRemaining <= 0) {
+          clearInterval(timer);
+          showScore();
+        }
+      }, 1000);
+    }
+
+    function showScore() {
+      document.getElementById("score").classList.remove("hidden");
+      document.getElementById("score").innerText = `Your Score: ${score} / 30`;
+      document.getElementById("next-btn").classList.add("hidden");
+    }
+
+    document.getElementById("next-btn").addEventListener("click", loadQuestion);
+  </script>
+</body>
+</html>
